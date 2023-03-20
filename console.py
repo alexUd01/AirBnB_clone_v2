@@ -248,7 +248,10 @@ class HBNBCommand(cmd.Cmd):
             for k, v in storage._FileStorage__objects.items():
                 print_list.append(v)
 
-        for i in range(len(print_list)):
+        if not (len(print_list)):  # Empty list of objects
+            print('[]')
+            return
+        for i in range(len(print_list)):  # Non-empty list of objects
             print('[' if i == 0 else ', ', end='')
             print(print_list[i], end='')
             print(']' if i == len(print_list) - 1 else '', end='')
