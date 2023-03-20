@@ -33,7 +33,7 @@ class HBNBCommand(cmd.Cmd):
     def preloop(self):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
-            print('(hbnb)')
+            print('(hbnb)', end=' ')
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
@@ -115,21 +115,56 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
+
+        tmp_list = args.split()
+        if not tmp_list:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+
+        _cls = tmp_list[0]
+        if _cls not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+
+        kwargs = None
+        # parse **kwargs if present
+        if len(tmp_list) > 1:
+            newlist = []
+            for item in tmp_list[1:]:
+                item = item.replace('=', ':')
+                key = '"' + item[:item.find(':')] + '"'
+                val = item[item.find(':') + 1:]
+
+                if ('_' in item[item.find(':') + 1:]):  # Replace '_' with ' '
+                    val = item[item.find(':') + 1:].replace('_', ' ')
+
+                item = '{}:{}'.format(key, val)
+                newlist.append(item)
+
+            str_kwargs = ', '.join(newlist)
+            dict_kwargs = '{' + str_kwargs + '}'
+            kwargs = eval(dict_kwargs)
+
+        if kwargs:
+            dummy = HBNBCommand.classes[_cls]()
+            new_dict = dummy.to_dict()
+            new_dict.update(kwargs)
+            new_instance = HBNBCommand.classes[_cls](**new_dict)
+        else:
+            new_instance = HBNBCommand.classes[_cls]()
+        storage.new(new_instance)
         print(new_instance.id)
         storage.save()
 
     def help_create(self):
         """ Help information for the create method """
-        print("Creates a class of any type")
-        print("[Usage]: create <className>\n")
+        print("-- Create: creates a class of any type\n")
+        print("[Usage]: create <className>")
+        print("         create <className> <param 1> <param 2> <param 3>...\n")
+        print("Param syntax: <key name>=<value>")
+        print("Examples:\n              name=\"value\"   # For strings")
+        print("              name=value     # For integers")
+        print()
 
     def do_show(self, args):
         """ Method to show an individual object """
@@ -208,12 +243,16 @@ class HBNBCommand(cmd.Cmd):
                 return
             for k, v in storage._FileStorage__objects.items():
                 if k.split('.')[0] == args:
-                    print_list.append(str(v))
+                    print_list.append(v)
         else:
             for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
+                print_list.append(v)
 
-        print(print_list)
+        for i in range(len(print_list)):
+            print('[' if i == 0 else ', ', end='')
+            print(print_list[i], end='')
+            print(']' if i == len(print_list) - 1 else '', end='')
+        print()
 
     def help_all(self):
         """ Help information for the all command """
