@@ -1,6 +1,15 @@
 #!/usr/bin/python3
 """ A module that contains only a single class `DBStorage` """
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
+
+classes = {"User": User, "State": State, "City": City, "Amenity": Amenity,
+           "Place": Place, "Review": Review}
 
 class DBStorage:
     """ Database Storage Engine """
@@ -25,4 +34,45 @@ class DBStorage:
         # Determine whether to use `test` or `development` envirionment
         _env = getenv('HBNB_ENV')
         if _env == 'test':
-            
+            Base.metadata.drop_all(self.__engine)
+
+    def all(self, cls=None):
+        """ A method that performs a query on the current database session
+        depending on the class name `cls`
+        """
+        if cls is None:
+            query = self.__session.query(User, State, City, Amenity, Place,
+                                     Review).all()
+        else:
+            query = self.__session.query(classes[cls]).all()
+
+        result = {}
+        for obj in query:
+            key = type(obj).__name__ + '.' + obj.id
+            result[key] = obj
+
+        return result
+
+    def new(self, obj):
+        """ Adds the object `obj` to the current database session. """
+        self.__session.add(obj)
+
+    def save(self):
+        """ Commit all changes of the current database session. """
+        self.__session.commit()
+
+    def delete(self, obj=None):
+        """ Delete from the current database session `obj`. """
+        if obj is not None:
+            self.__session.delete(obj)
+
+    def reload(self):
+        """ Create all tables in the database """
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+
+        
