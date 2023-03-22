@@ -26,10 +26,10 @@ class DBStorage:
         _user = getenv('HBNB_MYSQL_USER')
         _pass = getenv('HBNB_MYSQL_PWD')
         _host = getenv('HBNB_MYSQL_HOST', default='localhost')
-        _db_name = getenv('HBNB_MYSQL_DB')
+        db_name = getenv('HBNB_MYSQL_DB')
 
         self.__engine = create_engine(
-            "mysql+mysqldb://{}:{}@{}/{}".format(_user, _pass, _host, _db_name),
+            "mysql+mysqldb://{}:{}@{}/{}".format(_user, _pass, _host, db_name),
             pool_pre_ping=True
         )
         # Determine whether to use `test` or `development` envirionment

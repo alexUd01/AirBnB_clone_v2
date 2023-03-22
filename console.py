@@ -201,11 +201,16 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, args):
         """ Destroys a specified object """
+        from models.engine.file_storage import FileStorage
+        from models.engine.db_storage import DBStorage
+
         new = args.partition(" ")
         c_name = new[0]
         c_id = new[2]
         if c_id and ' ' in c_id:
             c_id = c_id.partition(' ')[0]
+        c_id = c_id.strip("'")
+        c_id = c_id.strip('"')
 
         if not c_name:
             print("** class name missing **")
@@ -222,8 +227,12 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del (storage.all()[key])
-            storage.save()
+            if isinstance(storage, FileStorage):
+                del (storage.all()[key])
+                storage.save()
+            elif isinstance(storage, DBStorage):
+                storage.delete(storage.all(c_name)[key])
+                storage.save()
         except KeyError:
             print("** no instance found **")
 
