@@ -51,6 +51,7 @@ class DBStorage:
         for obj in query:
             key = type(obj).__name__ + '.' + obj.id
             result[key] = obj
+            del result[key]._sa_instance_state
 
         return result
 
