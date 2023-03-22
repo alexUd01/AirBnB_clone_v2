@@ -11,6 +11,7 @@ from models.review import Review
 classes = {"User": User, "State": State, "City": City, "Amenity": Amenity,
            "Place": Place, "Review": Review}
 
+
 class DBStorage:
     """ Database Storage Engine """
     __engine = None
@@ -20,7 +21,7 @@ class DBStorage:
         """ Initialize instances """
         from sqlalchemy import create_engine
         from os import getenv
-        from models.base import Base
+        from models.base_model import Base
 
         _user = getenv('HBNB_MYSQL_USER')
         _pass = getenv('HBNB_MYSQL_PWD')
@@ -28,7 +29,7 @@ class DBStorage:
         _db_name = getenv('HBNB_MYSQL_DB')
 
         self.__engine = create_engine(
-            "mysql+msqldb://{}:{}@{}/{}".format(_user, _pass, _host, _db_name),
+            "mysql+mysqldb://{}:{}@{}/{}".format(_user, _pass, _host, _db_name),
             pool_pre_ping=True
         )
         # Determine whether to use `test` or `development` envirionment
@@ -42,7 +43,7 @@ class DBStorage:
         """
         if cls is None:
             query = self.__session.query(User, State, City, Amenity, Place,
-                                     Review).all()
+                                         Review).all()
         else:
             query = self.__session.query(classes[cls]).all()
 
@@ -76,6 +77,7 @@ class DBStorage:
         from models.review import Review
         from sqlalchemy.orm import sessionmaker
         from sqlalchemy.orm import scoped_session
+        from models.base_model import Base
 
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(
