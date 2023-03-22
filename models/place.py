@@ -26,3 +26,19 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     amenity_ids = []
+
+    reviews = relationship('Review', backref='place')
+
+    @property
+    def reviews(self):
+        """ Returns the list of Review instances whose place_id is equal to
+        the current place.id
+        """
+        from models import storage
+
+        result = []
+        for k, v in storage.all(Review).items():
+            if k.split('.')[1] == self.id:
+                result.append(v)
+
+        return result
