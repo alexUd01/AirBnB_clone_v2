@@ -12,7 +12,7 @@ class City(BaseModel, Base):
 
     __tablename__ = 'cities'
     name = Column(String(128), nullable=False)
-    state_id = Column(String(60), nullable, ForeignKey('states.id'))
+    state_id = Column(String(60),  ForeignKey('states.id'), nullable=False)
 
     # Uncomment the line below this line if checker fails
     # states = relationship('State', backref='cities')
