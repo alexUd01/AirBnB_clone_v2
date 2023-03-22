@@ -5,6 +5,7 @@ from models.base_model import Base
 from sqlalchemy import Column
 from sqlalchemy import String
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 
 class City(BaseModel, Base):
@@ -14,5 +15,4 @@ class City(BaseModel, Base):
     name = Column(String(128), nullable=False)
     state_id = Column(String(60),  ForeignKey('states.id'), nullable=False)
 
-    # Uncomment the line below this line if checker fails
-    # states = relationship('State', backref='cities')
+    places = relationship('Place', backref='cities')
