@@ -26,11 +26,17 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
         else:
-            kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
-                                                     '%Y-%m-%dT%H:%M:%S.%f')
-            kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
-                                                     '%Y-%m-%dT%H:%M:%S.%f')
-            del kwargs['__class__']
+            try:
+                kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
+                                                         '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
+                                                         '%Y-%m-%dT%H:%M:%S.%f')
+            except KeyError:
+                kwargs['id'] = str(uuid.uuid4())
+                kwargs['created_at'] = datetime.now()
+                kwargs['updated_at'] = datetime.now()
+            else:
+                del kwargs['__class__']
             self.__dict__.update(kwargs)
 
     def __str__(self):

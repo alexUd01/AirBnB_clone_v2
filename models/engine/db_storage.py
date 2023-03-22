@@ -45,13 +45,13 @@ class DBStorage:
             query = self.__session.query(User, State, City, Amenity, Place,
                                          Review).all()
         else:
-            query = self.__session.query(classes[cls]).all()
+            query = self.__session.query(cls).all()
 
         result = {}
         for obj in query:
             key = type(obj).__name__ + '.' + obj.id
             result[key] = obj
-            del result[key]._sa_instance_state
+            del result[key]
 
         return result
 
