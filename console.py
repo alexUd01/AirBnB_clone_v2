@@ -231,7 +231,7 @@ class HBNBCommand(cmd.Cmd):
                 del (storage.all()[key])
                 storage.save()
             elif isinstance(storage, DBStorage):
-                storage.delete(storage.all(c_name)[key])
+                storage.delete(storage.all()[key])
                 storage.save()
         except KeyError:
             print("** no instance found **")

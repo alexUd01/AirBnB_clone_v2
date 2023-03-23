@@ -5,6 +5,7 @@ from models.base_model import Base
 from sqlalchemy import Column
 from sqlalchemy import String
 from sqlalchemy.orm import relationship
+from models import storage_type
 
 
 class Amenity(BaseModel, Base):
@@ -12,4 +13,7 @@ class Amenity(BaseModel, Base):
 
     __tablename__ = 'amenities'
 
-    name = Column(String(128), nullable=False)
+    if storage_type == 'db':
+        name = Column(String(128), nullable=False)
+    else:
+        name = ''

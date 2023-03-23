@@ -6,7 +6,11 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+from models import storage_type
 
+
+if storage_type == 'db':
+    from models.place import place_amenity
 
 classes = {"User": User, "State": State, "City": City, "Amenity": Amenity,
            "Place": Place, "Review": Review}
@@ -41,23 +45,36 @@ class DBStorage:
         """ A method that performs a query on the current database session
         depending on the class name `cls`
         """
+        result = {}
         if cls is None:
-            query = self.__session.query(User, State, City, Amenity, Place,
-                                         Review).all()
+            for val in classes.values():
+                query = self.__session.query(val).all()
+                for obj in query:
+                    key = type(obj).__name__ + '.' + obj.id
+                    result[key] = obj
+                    if hasattr(obj, '_sa_instance_state'):
+                        del(result[key]._sa_instance_state)
         else:
             query = self.__session.query(cls).all()
-
-        result = {}
-        for obj in query:
-            key = type(obj).__name__ + '.' + obj.id
-            result[key] = obj
-            del result[key]
-
+            for obj in query:
+                key = type(obj).__name__ + '.' + obj.id
+                result[key] = obj
+                if hasattr(obj, '_sa_instance_state'):
+                    del(result[key]._sa_instance_state)
         return result
 
     def new(self, obj):
         """ Adds the object `obj` to the current database session. """
-        self.__session.add(obj)
+        if obj is None:
+            return
+
+        try:
+            self.__session.add(obj)
+            self.__session.flush()
+            self.__session.refresh(obj)
+        except Exception as ex:
+            self.__session.rollback()
+            raise ex
 
     def save(self):
         """ Commit all changes of the current database session. """
@@ -66,7 +83,8 @@ class DBStorage:
     def delete(self, obj=None):
         """ Delete from the current database session `obj`. """
         if obj is not None:
-            self.__session.delete(obj)
+            self.__session.query(type(obj)).filter(
+                type(obj).id == obj.id).delete()
 
     def reload(self):
         """ Create all tables in the database """
