@@ -53,14 +53,14 @@ class DBStorage:
                     key = type(obj).__name__ + '.' + obj.id
                     result[key] = obj
                     if hasattr(obj, '_sa_instance_state'):
-                        del(result[key]._sa_instance_state)
+                        del (result[key]._sa_instance_state)
         else:
             query = self.__session.query(cls).all()
             for obj in query:
                 key = type(obj).__name__ + '.' + obj.id
                 result[key] = obj
                 if hasattr(obj, '_sa_instance_state'):
-                    del(result[key]._sa_instance_state)
+                    del (result[key]._sa_instance_state)
         return result
 
     def new(self, obj):

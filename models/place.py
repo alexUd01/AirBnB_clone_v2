@@ -43,7 +43,7 @@ class Place(BaseModel, Base):
         reviews = relationship('Review', backref='place',
                                cascade='all, delete, delete-orphan')
         amenities = relationship('Amenity', secondary=place_amenity,
-                             viewonly=False, backref='places_amenities')
+                                 viewonly=False, backref='places_amenities')
     else:
         city_id = ""
         user_id = ""
@@ -57,40 +57,40 @@ class Place(BaseModel, Base):
         longitude = 0.0
         amenity_ids = []
 
-    @property
-    def reviews(self):
-        """ Returns the list of Review instances whose place_id is equal to
-        the current place.id
-        """
-        from models import storage
+        @property
+        def reviews(self):
+            """ Returns the list of Review instances whose place_id is equal to
+            the current place.id
+            """
+            from models import storage
 
-        result = []
-        for k, v in storage.all(Review).items():
-            if k.split('.')[1] == self.id:
-                result.append(v)
-        return result
+            result = []
+            for k, v in storage.all(Review).items():
+                if k.split('.')[1] == self.id:
+                    result.append(v)
+                return result
 
-    @property
-    def amenities(self):
-        """ Returns the list of Amenity instances based on the attribute
-        ammenity_ids that contains all Amenity.id linked to Place
-        """
-        from models import storage
-        from models.amenity import Amenity
+        @property
+        def amenities(self):
+            """ Returns the list of Amenity instances based on the attribute
+            ammenity_ids that contains all Amenity.id linked to Place
+            """
+            from models import storage
+            from models.amenity import Amenity
 
-        lst = []
-        for item in storage.all(Amenity).values():
-            if item.id in self.amenity_ids:
-                lst.append(item)
-        return lst
+            lst = []
+            for item in storage.all(Amenity).values():
+                if item.id in self.amenity_ids:
+                    lst.append(item)
+            return lst
 
-    @amenities.setter
-    def amenities(self, Amenity_obj):
-        """ Handles append method for adding Amenity.id to the attribute
-        amenity_id.
-        """
-        if Amenity_obj is None:
-            return
-        if isinstance(Amenity_obj, Amenity):
-            if Amenity_obj not in self.amenity_ids:
-                self.amenity_ids.append(Amenity.id)
+        @amenities.setter
+        def amenities(self, Amenity_obj):
+            """ Handles append method for adding Amenity.id to the attribute
+            amenity_id.
+            """
+            if Amenity_obj is None:
+                return
+            if isinstance(Amenity_obj, Amenity):
+                if Amenity_obj not in self.amenity_ids:
+                    self.amenity_ids.append(Amenity.id)
