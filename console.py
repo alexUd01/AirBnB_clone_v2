@@ -258,7 +258,7 @@ class HBNBCommand(cmd.Cmd):
             if isinstance(storage, FileStorage):
                 all_objects = storage._FileStorage__objects
             elif isinstance(storage, DBStorage):
-                all_objects = storage.all(_cls)
+                all_objects = storage.all(self.classes[_cls])
 
             # Parse dictionary
             for k, v in all_objects.items():
