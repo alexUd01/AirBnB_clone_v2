@@ -56,4 +56,4 @@ sudo sed -i "s/$old_str/$replacement_str/" /etc/nginx/sites-enabled/default
 
 echo "Done"
 
-sudo nginx -s reload
+sudo service nginx restart
