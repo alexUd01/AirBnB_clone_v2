@@ -29,14 +29,23 @@
 sudo apt-get update -y
 sudo apt-get install nginx -y
 
+sudo ufw allow 'Nginx HTTP'
+
 # Requirement 2, 3, 4, 5, 6, 9
 sudo mkdir -p /data/web_static/{releases/test,shared}  # Cheers
 sudo chown -R "$USER":"$USER" /data
 
 # Requirement 7
-echo "Simple content, to test my Nginx configuration" > /data/web_static/releases/test/index.html
+sudo echo "<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>" | sudo tee /data/web_static/releases/test/index.html > /data/web_static/releases/test/index.html
 
 # Requirement 8
+sudo rm -rf /data/web_static/current
 sudo ln -s /data/web_static/releases/test/ /data/web_static/current
 
 # Requirement 10
