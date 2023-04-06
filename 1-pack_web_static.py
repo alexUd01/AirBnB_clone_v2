@@ -12,6 +12,7 @@ web_static folder of my AirBnB Clone repo, using the function do_pack.
 #     - The function do_pack must return the archive path if the archive has
 #       been correctly generated. Otherwise, it should return None
 
+
 def do_pack():
     """A function that generates a .tgz archive from contentsof the web_static
     folder of my AirBnB Coloce repo

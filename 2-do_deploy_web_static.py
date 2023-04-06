@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-# Write a Fabric script (based on the file 1-pack_web_static.py) that
-# distributes an archive to your web servers, using the function do_deploy:
-
+"""Write a Fabric script (based on the file 1-pack_web_static.py) that
+distributes an archive to your web servers, using the function do_deploy:
+"""
 # Prototype: def do_deploy(archive_path):
 #   - Returns False if the file at the path archive_path doesn’t exist
 #   - The script should take the following steps:
@@ -28,3 +28,53 @@
 # Disclaimer: commands execute by Fabric displayed below are linked to the way
 # we implemented the archive function do_pack - like the mv command - depending
 # of your implementation of it, you may don’t need it
+
+
+def do_deploy(archive_path):
+    """A function that distributes an archive to my webservers
+    """
+    from fabric.api import put, env
+    if archive_path is None:
+        return False
+
+    # Get Archive Name
+    archive_name = archive_path.split('/')[-1]
+    unziped_name = archived_name.split('.')[0]
+
+    # Set env
+    env.hosts = ['18.207.139.229', '100.26.49.225']
+    env.user = 'ubuntu'
+
+    # Push to remote
+    with cd('/tmp'):
+        stat = put(local_path=archive_path, remote_path=archive_name,
+                   use_sudo=True)
+        if stat.failed:
+            return False
+
+        stat = sudo(
+            'tar -xzf {} --directory=/data/web_static/releases/'.format(
+                archive_name))
+        if stat.failed:
+            return False
+
+        stat = sudo('rm -fv {}'.format(archive_name))
+        if stat.failed:
+            return False
+
+    # Deploy
+    with cd('/data/web_static/'):
+        stat = sudo('mv releases/web_static/* releases/')
+        if stat.failed:
+            return False
+
+        # Remove temporary files
+        sudo('rm -rf releases/web_static/')
+
+        # Create Symbolic link
+        stat = sudo('rm -rf current')
+        stat = sudo('ln -s realeases/{}/ current'.format(unzipped_name))
+        if stat.failed:
+            return False
+
+    return True
