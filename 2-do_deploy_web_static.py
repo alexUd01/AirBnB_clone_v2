@@ -28,22 +28,23 @@ distributes an archive to your web servers, using the function do_deploy:
 # Disclaimer: commands execute by Fabric displayed below are linked to the way
 # we implemented the archive function do_pack - like the mv command - depending
 # of your implementation of it, you may don’t need it
+from fabric.api import put, env, cd, sudo
+
+# Set env
+env.hosts = ['18.207.139.229', '100.26.49.225']
+env.user = 'ubuntu'
 
 
 def do_deploy(archive_path):
     """A function that distributes an archive to my webservers
     """
-    from fabric.api import put, env
     if archive_path in [None, False]:
         return False
 
     # Get Archive Name
     archive_name = archive_path.split('/')[-1]
-    unziped_name = archived_name.split('.')[0]
-
-    # Set env
-    env.hosts = ['18.207.139.229', '100.26.49.225']
-    env.user = 'ubuntu'
+    unzipped_name = archive_name.split('.')[0]
+    print(archive_path)
 
     # Push to remote
     with cd('/tmp'):
@@ -52,19 +53,20 @@ def do_deploy(archive_path):
         if stat.failed:
             return False
 
-        stat = sudo(
-            'tar -xzf {} --directory=/data/web_static/releases/'.format(
-                archive_name))
-        if stat.failed:
-            return False
+    stat = sudo('mkdir -p /data/web_static/releases/')
 
-        stat = sudo('rm -fv {}'.format(archive_name))
-        if stat.failed:
-            return False
+    stat = sudo(
+        'tar -xzf /tmp/{} -C /data/web_static/releases/'.format(archive_name))
+    if stat.failed:
+        return False
+
+    stat = sudo('rm -fv /tmp/{}'.format(archive_name))
+    if stat.failed:
+        return False
 
     # Deploy
     with cd('/data/web_static/'):
-        stat = sudo('mv releases/web_static/* releases/')
+        stat = sudo('cp -ru releases/web_static/* releases/')
         if stat.failed:
             return False
 
