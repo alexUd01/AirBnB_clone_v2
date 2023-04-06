@@ -33,7 +33,7 @@ sudo ufw allow 'Nginx HTTP'
 
 # Requirement 2, 3, 4, 5, 6, 9
 sudo mkdir -p /data/web_static/{releases/test,shared}  # Cheers
-sudo chown -R "$USER":"$USER" /data
+sudo chown -R "ubuntu":"ubuntu" /data
 
 # Requirement 7
 sudo echo "<html>
