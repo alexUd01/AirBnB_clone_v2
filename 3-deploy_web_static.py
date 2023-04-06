@@ -23,6 +23,7 @@ from fabric.api import env
 
 env.user = 'ubuntu'
 env.hosts = ['18.207.139.229', '100.26.49.225']
+env.key_filename = '~/.ssh/id_rsa-alx_server_1'
 
 do_pack = __import__("1-pack_web_static").do_pack
 do_deploy = __import__('2-do_deploy_web_static').do_deploy

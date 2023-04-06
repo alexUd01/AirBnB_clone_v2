@@ -16,7 +16,7 @@ from time import strftime
 
 
 def do_pack():
-    """A function that generates a .tgz archive from contentsof the web_static
+    """A function that generates a .tgz archive from contents of the web_static
     folder of my AirBnB Coloce repo
     """
     tstamp = strftime('%Y%m%d%H%M%S')
