@@ -53,20 +53,23 @@ def do_deploy(archive_path):
         if stat.failed:
             return False
 
-    stat = sudo('mkdir -p /data/web_static/releases/')
-
     stat = sudo(
         'tar -xzf /tmp/{} -C /data/web_static/releases/'.format(archive_name))
     if stat.failed:
         return False
 
-    stat = sudo('rm -fv /tmp/{}'.format(archive_name))
+    stat = sudo('rm -fv /tmp/{}/'.format(archive_name))
     if stat.failed:
         return False
 
     # Deploy
     with cd('/data/web_static/'):
-        stat = sudo('cp -ru releases/web_static/* releases/')
+        stat = sudo('mkdir -p releases/{}/'.format(unzipped_name))
+        if stat.failed:
+            return False
+
+        stat = sudo('cp -ru releases/web_static/* releases/{}/'.format(
+            unzipped_name))
         if stat.failed:
             return False
 
@@ -75,7 +78,7 @@ def do_deploy(archive_path):
 
         # Create Symbolic link
         stat = sudo('rm -rf current')
-        stat = sudo('ln -s realeases/{}/ current'.format(unzipped_name))
+        stat = sudo('ln -s releases/{}/ current'.format(unzipped_name))
         if stat.failed:
             return False
 

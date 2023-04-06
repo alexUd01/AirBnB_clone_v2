@@ -31,7 +31,7 @@ sudo apt-get install nginx -y
 
 # Requirement 2, 3, 4, 5, 6, 9
 sudo mkdir -p /data/web_static/{releases/test,shared}  # Cheers
-sudo chown -R $USER:$USER /data
+sudo chown -R "$USER":"$USER" /data
 
 # Requirement 7
 echo "Simple content, to test my Nginx configuration" > /data/web_static/releases/test/index.html
@@ -43,7 +43,7 @@ sudo ln -s /data/web_static/releases/test/ /data/web_static/current
 old_str="\tlisten 80 default_server;"
 # forward slashes are escaped to prevent sed from marking it as the end of replacement string.
 replacement_str="$old_str\n\n\tlocation \/hbnb_static\/ {\n\t\talias \/data\/web_static\/current\/;\n\t}"
-sudo sed -i "s/$old_str/$replacement_str/" /etc/nginx/sites-available/default
+sudo sed -i "s/$old_str/$replacement_str/" /etc/nginx/sites-enabled/default
 
 echo "Done"
 
