@@ -42,7 +42,7 @@ sudo echo "<html>
   <body>
     Holberton School
   </body>
-</html>" > /data/web_static/releases/test/index.html
+</html>" | sudo tee /data/web_static/releases/test/index.html
 
 # Requirement 8
 sudo rm -rf /data/web_static/current
