@@ -18,11 +18,10 @@ def do_pack():
     folder of my AirBnB Coloce repo
     """
     from fabric.api import local, env
-    from datetime import datetime
+    from time import strftime
 
-    now = datetime.now()
-    tstamp = "{}{}{}{}{}{}".format(now.year, now.month, now.day,
-                                   now.hour, now.minute, now.second)
+    tstamp = strftime('%Y%m%d%H%M%S')
+
     cmd = "tar -cvzf versions/web_static_{}.tgz web_static".format(tstamp)
     path = cmd.split()[2]
 

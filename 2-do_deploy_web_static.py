@@ -34,7 +34,7 @@ def do_deploy(archive_path):
     """A function that distributes an archive to my webservers
     """
     from fabric.api import put, env
-    if archive_path is None:
+    if archive_path in [None, False]:
         return False
 
     # Get Archive Name
