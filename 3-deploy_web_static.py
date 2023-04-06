@@ -19,12 +19,22 @@
 # In the following example, the SSH key and the username used for accessing to
 # the server are passed in the command line.Of course, you could define them as
 # Fabric environment variables (ex: env.user =…)
+from fabric.api import env
+
+env.user = 'ubuntu'
+env.hosts = ['18.207.139.229', '100.26.49.225']
+
+do_pack = __import__("1-pack_web_static").do_pack
+do_deploy = __import__('2-do_deploy_web_static').do_deploy
+
+# import compressed file
+archive_path = do_pack()
+
 
 def deploy():
-    do_pack = __import__('1-pack_web_static').do_pack
-    do_deploy = __import__('2-do_deploy_web_static').do_deploy
-
-    archive_path = do_pack()
+    """A function that creates and distributes an archive to my webserver
+    using previously created functions
+    """
     stat = do_deploy(archive_path)
 
     return stat

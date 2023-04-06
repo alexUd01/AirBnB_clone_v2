@@ -11,15 +11,14 @@ web_static folder of my AirBnB Clone repo, using the function do_pack.
 #       be web_static_<year><month><day><hour><minute><second>.tgz
 #     - The function do_pack must return the archive path if the archive has
 #       been correctly generated. Otherwise, it should return None
+from fabric.api import local, env
+from time import strftime
 
 
 def do_pack():
     """A function that generates a .tgz archive from contentsof the web_static
     folder of my AirBnB Coloce repo
     """
-    from fabric.api import local, env
-    from time import strftime
-
     tstamp = strftime('%Y%m%d%H%M%S')
 
     cmd = "tar -cvzf versions/web_static_{}.tgz web_static".format(tstamp)

@@ -44,7 +44,6 @@ def do_deploy(archive_path):
     # Get Archive Name
     archive_name = archive_path.split('/')[-1]
     unzipped_name = archive_name.split('.')[0]
-    print(archive_path)
 
     # Push to remote
     with cd('/tmp'):
