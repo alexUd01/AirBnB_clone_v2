@@ -37,12 +37,14 @@ sudo chown -R $USER:$USER /data
 echo "Simple content, to test my Nginx configuration" > /data/web_static/releases/test/index.html
 
 # Requirement 8
-ln -s /data/web_static/releases/test/ /data/web_static/current
+sudo ln -s /data/web_static/releases/test/ /data/web_static/current
 
 # Requirement 10
 old_str="\tlisten 80 default_server;"
 # forward slashes are escaped to prevent sed from marking it as the end of replacement string.
 replacement_str="$old_str\n\n\tlocation \/hbnb_static\/ {\n\t\talias \/data\/web_static\/current\/;\n\t}"
-sed -i "s/$old_str/$replacement_str/" /etc/nginx/sites-available/default
+sudo sed -i "s/$old_str/$replacement_str/" /etc/nginx/sites-available/default
+
+echo "Done"
 
 sudo nginx -s reload
