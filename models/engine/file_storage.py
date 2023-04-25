@@ -21,7 +21,7 @@ class FileStorage:
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        self.all().update({obj.to_dict()['__class__'] + '.' + str(obj.id): obj})
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -66,3 +66,8 @@ class FileStorage:
             self.save()
         else:  # Remove this condition if checker fails
             raise Exception("Not Implemented yet")
+
+    def close(self):
+        """call reload() method for deserializing the JSON file to objects
+        """
+        self.reload()
